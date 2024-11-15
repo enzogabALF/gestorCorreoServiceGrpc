@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+option java_package = "com.example";
+option java_outer_classname = "GestorCorreosServiceProto";
+
+service GestorCorreosService {
+    rpc EnviarCorreo (CorreoRequest) returns (CorreoResponse);
+    rpc RecibirCorreo (CorreoRequest) returns (CorreoResponse);
+    rpc MarcarComoFavorito (FavoritoRequest) returns (CorreoResponse);
+    rpc ListarFavoritos (FavoritoListRequest) returns (FavoritoListResponse);
+
+    // Nuevas funciones para gestión de grupos y bandeja
+    rpc CrearGrupo (GrupoRequest) returns (GrupoResponse);
+    rpc AgregarContactoAGrupo (ModificarGrupoRequest) returns (GrupoResponse);
+    rpc EliminarContactoDeGrupo (ModificarGrupoRequest) returns (GrupoResponse);
+    rpc ListarGrupos (ListarGruposRequest) returns (ListarGruposResponse);
+
+    rpc ListarCorreosRecibidos (BandejaRequest) returns (BandejaResponse);
+    rpc ListarCorreosEnviados (BandejaRequest) returns (BandejaResponse);
+}
+
+// Mensaje de correo
+message Correo {
+    string remitente = 1;
+    string destinatario = 2;
+    string asunto = 3;
+    string contenido = 4;
+    bool esFavorito = 5; // Campo para indicar si el correo es favorito
+}
+
+// Solicitud y respuesta para enviar o recibir un correo
+message CorreoRequest {
+    Correo correo = 1;
+}
+
+message CorreoResponse {
+    string mensaje = 1;
+    bool exito = 2; // Campo que indica si la operación fue exitosa
+}
+
+// Manejo de favoritos
+message FavoritoRequest {
+    string remitente = 1;
+    bool esFavorito = 2;
+}
+
+message FavoritoListRequest {}
+
+message FavoritoListResponse {
+    repeated Correo correosFavoritos = 1;
+}
+
+// Gestión de grupos
+message GrupoRequest {
+    string nombreGrupo = 1;
+    repeated string miembros = 2;  // Lista de miembros del grupo
+}
+
+message ModificarGrupoRequest {
+    string nombreGrupo = 1;
+    string contacto = 2;
+}
+
+message GrupoResponse {
+    string mensaje = 1;
+    bool exito = 2;
+}
+
+message ListarGruposRequest {}
+
+message ListarGruposResponse {
+    repeated string nombresGrupos = 1;
+}
+
+// Bandeja de correos
+message BandejaRequest {
+    string usuario = 1; // Usuario para el cual se listan los correos en la bandeja
+}
+
+message BandejaResponse {
+    repeated Correo correos = 1; // Lista de correos recibidos o enviados
+}
